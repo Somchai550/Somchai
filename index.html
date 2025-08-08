@@ -132,6 +132,24 @@
         </div>
         
         <div class="result-container">
+            <div id="faceShapeSelection" style="display:none; margin-top: 2rem;">
+    <h3>เลือกโครงหน้าของคุณ:</h3>
+    <div class="face-shape-options">
+        <button class="face-shape-btn" data-shape="oval">
+            <img src="https://via.placeholder.com/50/FFC0CB/FFFFFF?text=O" alt="หน้ารูปไข่">
+            <p>รูปไข่</p>
+        </button>
+        <button class="face-shape-btn" data-shape="round">
+            <img src="https://via.placeholder.com/50/FFFF00/000000?text=R" alt="หน้ากลม">
+            <p>หน้ากลม</p>
+        </button>
+        <button class="face-shape-btn" data-shape="square">
+            <img src="https://via.placeholder.com/50/ADD8E6/000000?text=S" alt="หน้าเหลี่ยม">
+            <p>หน้าเหลี่ยม</p>
+        </button>
+        </div>
+</div>
+
             <video id="video" autoplay muted></video>
             <canvas id="faceCanvas"></canvas>
             <div id="loading">กำลังโหลดโมเดล AI...</div>
@@ -169,6 +187,38 @@
         </div>
     </div>
     <script>
+        /* เพิ่มโค้ด CSS นี้เข้าไปในส่วน <style> */
+.face-shape-options {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 1rem;
+}
+.face-shape-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.face-shape-btn:hover {
+    background-color: #e2e6ea;
+}
+.face-shape-btn img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+.face-shape-btn p {
+    margin: 5px 0 0;
+    font-size: 0.8rem;
+    color: #333;
+}
+
         const startBtn = document.getElementById('startBtn');
         const stopBtn = document.getElementById('stopBtn');
         const video = document.getElementById('video');
@@ -177,6 +227,9 @@
         const hairstyleMenu = document.getElementById('hairstyleMenu');
         const imageUploadStatic = document.getElementById('imageUploadStatic');
         const processStaticBtn = document.getElementById('processStaticBtn');
+        const faceShapeSelection = document.getElementById('faceShapeSelection');
+        const faceShapeButtons = document.querySelectorAll('.face-shape-btn');
+
         const applyHairstyleButtons = document.querySelectorAll('.apply-hairstyle-btn');
         const ctx = faceCanvas.getContext('2d');
     
@@ -285,7 +338,7 @@
                 const detections = await faceapi.detectSingleFace(originalImage, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks();
                 if (detections) {
                     alert('ตรวจจับใบหน้าสำเร็จ! นี่คือทรงผมที่แนะนำสำหรับคุณ:');
-                    hairstyleMenu.style.display = 'block';
+                    faceShapeSelection.style.display = 'flex';
                 } else {
                     alert('ไม่พบใบหน้าในรูปภาพ กรุณาลองใช้รูปอื่น');
                     hairstyleMenu.style.display = 'none';
@@ -318,6 +371,17 @@
                 };
             });
         });
+        faceShapeButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const selectedShape = button.getAttribute('data-shape');
+        alert(`คุณเลือกโครงหน้าแบบ: ${selectedShape} - ตอนนี้เราจะแสดงทรงผมที่เหมาะกับคุณ`);
+        
+        // ซ่อนปุ่มเลือกโครงหน้าแล้วแสดงเมนูทรงผมแทน
+        faceShapeSelection.style.display = 'none';
+        hairstyleMenu.style.display = 'block';
+    });
+});
+
     </script>
 </body>
 </html>
