@@ -284,6 +284,15 @@
             .catch(err => {
                 console.error("Error accessing camera: ", err);
                 alert("ไม่สามารถเข้าถึงกล้องได้ กรุณาตรวจสอบสิทธิ์การใช้งาน");
+                alert(`ตรวจจับใบหน้าสำเร็จ! โครงหน้าของคุณน่าจะเป็นแบบ: ${faceShape}`);
+
+// แทรกตรงนี้
+const shape = faceShape.toLowerCase();
+
+document.querySelectorAll('.hairstyle-item').forEach(item => {
+    const p = item.querySelector('p').innerText.toLowerCase();
+    item.style.display = p.includes(shape) ? 'block' : 'none';
+});
             });
     });
 
