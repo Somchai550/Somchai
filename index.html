@@ -115,6 +115,37 @@
         #processStaticBtn {
             width: 100%;
         }
+        /* เพิ่มโค้ด CSS นี้เข้าไปในส่วน <style> */
+        .face-shape-options {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 1rem;
+        }
+        .face-shape-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .face-shape-btn:hover {
+            background-color: #e2e6ea;
+        }
+        .face-shape-btn img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+        .face-shape-btn p {
+            margin: 5px 0 0;
+            font-size: 0.8rem;
+            color: #333;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
 </head>
@@ -187,38 +218,6 @@
         </div>
     </div>
     <script>
-        /* เพิ่มโค้ด CSS นี้เข้าไปในส่วน <style> */
-.face-shape-options {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 1rem;
-}
-.face-shape-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 10px;
-    background-color: #f8f9fa;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-.face-shape-btn:hover {
-    background-color: #e2e6ea;
-}
-.face-shape-btn img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-}
-.face-shape-btn p {
-    margin: 5px 0 0;
-    font-size: 0.8rem;
-    color: #333;
-}
-      <script>
     const startBtn = document.getElementById('startBtn');
     const stopBtn = document.getElementById('stopBtn');
     const video = document.getElementById('video');
@@ -377,4 +376,4 @@
             hairstyleMenu.style.display = 'block';
         });
     });
-</script>  
+</script>
