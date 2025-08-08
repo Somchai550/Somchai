@@ -253,6 +253,7 @@
         });
     
         startBtn.addEventListener('click', () => {
+                alert('ปุ่มทำงาน!'); // 
             isRealtimeMode = true;
             if (videoStream) { stopBtn.click(); }
             video.style.display = 'block';
