@@ -322,28 +322,38 @@
     });
 
     processStaticBtn.addEventListener('click', async () => {
-        if (!originalImage) {
-            alert('กรุณาอัปโหลดรูปภาพก่อน');
-            return;
+    if (!originalImage) {
+        alert('กรุณาอัปโหลดรูปภาพก่อน');
+        return;
+    }
+    loading.style.display = 'block';
+    hairstyleMenu.style.display = 'none';
+
+    try {
+        const detections = await faceapi.detectSingleFace(originalImage, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks();
+        
+        if (detections) {
+            // โค้ดส่วนนี้จะวิเคราะห์โครงหน้าโดยอัตโนมัติ
+            const faceShape = getFaceShape(detections.landmarks);
+            alert(`ตรวจจับใบหน้าสำเร็จ! โครงหน้าของคุณน่าจะเป็นแบบ: ${faceShape}`);
+            
+            // ตอนนี้เรามีโครงหน้าแล้ว คุณสามารถนำไปใช้แสดงทรงผมที่เหมาะกับโครงหน้านั้นๆ ได้
+            // โค้ดส่วนนี้ต้องปรับปรุงเพิ่มเติมเพื่อให้แสดงทรงผมตามโครงหน้า
+            hairstyleMenu.style.display = 'block'; // แสดงเมนูทรงผม
+            faceShapeSelection.style.display = 'none'; // ซ่อนปุ่มเลือกโครงหน้า
+            
+        } else {
+            alert('ไม่พบใบหน้าในรูปภาพ กรุณาลองใช้รูปอื่น');
+            hairstyleMenu.style.display = 'none';
         }
-        loading.style.display = 'block';
-        hairstyleMenu.style.display = 'none';
-        try {
-            const detections = await faceapi.detectSingleFace(originalImage, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks();
-            if (detections) {
-                alert('ตรวจจับใบหน้าสำเร็จ! นี่คือทรงผมที่แนะนำสำหรับคุณ:');
-                faceShapeSelection.style.display = 'flex';
-            } else {
-                alert('ไม่พบใบหน้าในรูปภาพ กรุณาลองใช้รูปอื่น');
-                hairstyleMenu.style.display = 'none';
-            }
-        } catch (error) {
-            console.error('เกิดข้อผิดพลาดในการตรวจจับใบหน้า:', error);
-            alert('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');
-        } finally {
-            loading.style.display = 'none';
-        }
-    });
+    } catch (error) {
+        console.error('เกิดข้อผิดพลาดในการตรวจจับใบหน้า:', error);
+        alert('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');
+    } finally {
+        loading.style.display = 'none';
+    }
+});
+
 
     applyHairstyleButtons.forEach(button => {
         button.addEventListener('click', () => {
@@ -375,5 +385,30 @@
             faceShapeSelection.style.display = 'none';
             hairstyleMenu.style.display = 'block';
         });
+        // ฟังก์ชันสำหรับวิเคราะห์โครงหน้าจากจุดบนใบหน้า (landmarks)
+function getFaceShape(landmarks) {
+    const jawline = landmarks.getJawOutline();
+    const jawWidth = faceapi.euclideanDistance([jawline[0].x, jawline[0].y], [jawline[16].x, jawline[16].y]);
+
+    const cheekbone = landmarks.getLeftCheek().concat(landmarks.getRightCheek());
+    const cheekboneWidth = faceapi.euclideanDistance([cheekbone[0].x, cheekbone[0].y], [cheekbone[1].x, cheekbone[1].y]);
+
+    const forehead = landmarks.getForehead();
+    const foreheadWidth = faceapi.euclideanDistance([forehead[0].x, forehead[0].y], [forehead[1].x, forehead[1].y]);
+
+    const faceHeight = faceapi.euclideanDistance([jawline[8].x, jawline[8].y], [landmarks.getNose()[0].x, landmarks.getNose()[0].y]);
+
+    if (cheekboneWidth > jawWidth && cheekboneWidth > foreheadWidth && faceHeight > jawWidth * 1.5) {
+        return 'รูปไข่';
+    }
+    if (cheekboneWidth > faceHeight * 0.9 && cheekboneWidth < faceHeight * 1.1) {
+        return 'หน้ากลม';
+    }
+    if (jawWidth > cheekboneWidth * 0.9 && jawWidth < cheekboneWidth * 1.1) {
+        return 'หน้าเหลี่ยม';
+    }
+    return 'ไม่สามารถระบุได้';
+}
+
     });
 </script>
