@@ -379,15 +379,28 @@ document.querySelectorAll('.hairstyle-item').forEach(item => {
             hairstyleImage.onload = () => {
                 selectedHairstyle = hairstyleImage;
                 if (!isRealtimeMode && originalImage) {
-                    ctx.clearRect(0, 0, faceCanvas.width, faceCanvas.height);
-                    ctx.drawImage(originalImage, 0, 0, faceCanvas.width, faceCanvas.height);
+    ctx.clearRect(0, 0, faceCanvas.width, faceCanvas.height);
+    ctx.drawImage(originalImage, 0, 0, faceCanvas.width, faceCanvas.height);
 
-                    if (selectedHairstyle.complete) {
-                        ctx.globalAlpha = 0.8;
-                        ctx.drawImage(selectedHairstyle, 0, 0, faceCanvas.width, faceCanvas.height);
-                        ctx.globalAlpha = 1.0;
-                    }
-                }
+    faceapi.detectSingleFace(originalImage, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks()
+        .then(detections => {
+            if (detections) {
+                const landmarks = detections.landmarks;
+                const forehead = landmarks.positions[19];
+                const jaw = landmarks.positions[8];
+
+                const faceHeight = jaw.y - forehead.y;
+                const hairHeight = faceHeight * 0.8;
+                const hairWidth = faceCanvas.width * 0.6;
+                const x = (faceCanvas.width - hairWidth) / 2;
+                const y = forehead.y - hairHeight * 0.6;
+
+                ctx.globalAlpha = 0.85;
+                ctx.drawImage(selectedHairstyle, x, y, hairWidth, hairHeight);
+                ctx.globalAlpha = 1.0;
+            }
+        });
+}
             };
         });
     });
