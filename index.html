@@ -378,6 +378,7 @@
         });
     });
 
+        ...
     faceShapeButtons.forEach(button => {
         button.addEventListener('click', () => {
             const selectedShape = button.getAttribute('data-shape');
@@ -385,7 +386,9 @@
             faceShapeSelection.style.display = 'none';
             hairstyleMenu.style.display = 'block';
         });
-        // ฟังก์ชันสำหรับวิเคราะห์โครงหน้าจากจุดบนใบหน้า (landmarks)
+    });
+
+// วางฟังก์ชัน getFaceShape ที่นี่
 function getFaceShape(landmarks) {
     const jawline = landmarks.getJawOutline();
     const jawWidth = faceapi.euclideanDistance([jawline[0].x, jawline[0].y], [jawline[16].x, jawline[16].y]);
@@ -410,5 +413,5 @@ function getFaceShape(landmarks) {
     return 'ไม่สามารถระบุได้';
 }
 
-    });
 </script>
+
